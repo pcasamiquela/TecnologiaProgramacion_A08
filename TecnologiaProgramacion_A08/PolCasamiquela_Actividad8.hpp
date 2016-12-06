@@ -9,7 +9,7 @@ public:
 	int day, month, year;
 	Fecha(int _day, int _month, int _year) : day(_day), month(_month), year(_year) {};
 
-	friend bool Fecha::operator==(Fecha &fecha1, Fecha &fecha2) {
+	friend bool Fecha::operator==(const Fecha &fecha1, const Fecha &fecha2) {
 		return (fecha1.day == fecha2.day && fecha2.month==fecha2.month && fecha1.year == fecha2.year);
 	}
 	friend bool Fecha::operator<(const Fecha &fecha1, const Fecha &fecha2) {
@@ -22,14 +22,23 @@ public:
 			fecha1.month > fecha2.month && fecha1.year >= fecha2.year ||
 			fecha1.day > fecha2.day && fecha1.month >= fecha2.month && fecha1.year >= fecha2.year);
 	}
-
+	friend bool Fecha::operator<=(const Fecha &fecha1, const Fecha &fecha2) {
+		return (fecha1.year <= fecha2.year ||
+			fecha1.month <= fecha2.month && fecha1.year <= fecha2.year ||
+			fecha1.day <= fecha2.day && fecha1.month <= fecha2.month && fecha1.year <= fecha2.year);
+	}
+	friend bool Fecha::operator>=(const Fecha &fecha1, const Fecha &fecha2) {
+		return (fecha1.year >= fecha2.year ||
+			fecha1.month >= fecha2.month && fecha1.year >= fecha2.year ||
+			fecha1.day >= fecha2.day && fecha1.month >= fecha2.month && fecha1.year >= fecha2.year);
+	}
 };
 
 class Hora {
 public:
 	int hour, minutes;
 	Hora(int _hour, int _minutes) : hour(_hour), minutes(_minutes) {};
-	friend bool Hora::operator==(Hora &hora1, Hora &hora2) {
+	friend bool Hora::operator==(const Hora &hora1, const Hora &hora2) {
 		return (hora1.hour == hora2.hour && hora1.minutes == hora2.minutes);
 	}
 	friend bool Hora::operator<(const Hora &hora1, const Hora &hora2) {
@@ -39,6 +48,13 @@ public:
 	friend bool Hora::operator>(const Hora &hora1, const Hora &hora2) {
 		return (hora1.hour > hora2.hour || hora1.hour >= hora2.hour && hora1.minutes > hora2.minutes);
 	}
+	friend bool Hora::operator<=(const Hora &hora1, const Hora &hora2) {
+		return (hora1.hour <= hora2.hour || hora1.hour <= hora2.hour && hora1.minutes<=hora2.minutes);
+	}
+
+	friend bool Hora::operator>=(const Hora &hora1, const Hora &hora2) {
+		return (hora1.hour >= hora2.hour || hora1.hour >= hora2.hour && hora1.minutes >= hora2.minutes);
+	}
 };
 
 class Agenda {
@@ -47,10 +63,10 @@ private:
 public:
 	void insertarEvento(const Fecha &fecha, const Hora &hora, const string &descripcion); //done
 	void eliminarEventos(const Fecha &desde_fecha, const Hora &desde_hora, const Fecha &hasta_fecha, const Hora &hasta_hora);//peta al erase
-	void mostrarAgenda();//fet
-	list<pair<Hora, string>> eventosDia(const Fecha &fecha);
-	list<pair<Hora, string>> eventosDia(const Fecha &fecha, const Hora &desde, const Hora &hasta);
-
+	void mostrarAgenda();//done
+	list<pair<Hora, string>> eventosDia(const Fecha &fecha);//done
+	list<pair<Hora, string>> eventosDia(const Fecha &fecha, const Hora &desde, const Hora &hasta);//done
+	//el map no s'ordena!!!!!!! </>?¿
 
 };
 
@@ -64,7 +80,6 @@ void Agenda::eliminarEventos(const Fecha &desde_fecha, const Hora &desde_hora, c
 	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
 		if (it->first > desde_fecha && it->first < hasta_fecha &&
 			it->second.first > desde_hora && it->second.first < hasta_hora) {
-			cout << "ioh";
 			agendaMap.erase(it);
 		}
 	}
@@ -80,13 +95,17 @@ void Agenda::mostrarAgenda() {
 
 list<pair<Hora, string>> Agenda::eventosDia(const Fecha &fecha) {
 	list<pair<Hora, string>> eventos;
-	agendaMap.find(fecha);
+	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
+		if (it->first == fecha) eventos.push_back(it->second);
+	}
 	return eventos;
 }
 
 list<pair<Hora, string>> Agenda::eventosDia(const Fecha &fecha, const Hora &desde, const Hora &hasta) {
 	list<pair<Hora, string>> eventos;
-	agendaMap.find(fecha);
+	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
+		if (it->first == fecha && it->second.first >= desde && it->second.first <= hasta) eventos.push_back(it->second);
+	}
 	return eventos;
 }
 
