@@ -66,8 +66,6 @@ public:
 	void mostrarAgenda();//done
 	list<pair<Hora, string>> eventosDia(const Fecha &fecha);//done
 	list<pair<Hora, string>> eventosDia(const Fecha &fecha, const Hora &desde, const Hora &hasta);//done
-	//el map no s'ordena!!!!!!! </>?¿
-
 };
 
 
@@ -77,16 +75,20 @@ void Agenda::insertarEvento(const Fecha &fecha, const Hora &hora, const string &
 
 void Agenda::eliminarEventos(const Fecha &desde_fecha, const Hora &desde_hora, const Fecha &hasta_fecha, const Hora &hasta_hora) {
 	
-	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
-		if (it->first > desde_fecha && it->first < hasta_fecha &&
-			it->second.first > desde_hora && it->second.first < hasta_hora) {
+	auto it = agendaMap.begin();
+	auto temp = it;
+
+	while(it != agendaMap.end()) {
+		if (it->first >= desde_fecha && it->first <= hasta_fecha &&
+			it->second.first >= desde_hora && it->second.first <= hasta_hora) {
+			temp = it++;
 			agendaMap.erase(it);
+			it = temp;
 		}
 	}
 }
 
 void Agenda::mostrarAgenda() { 
-
 	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
 		cout << it->first.day << "/" << it->first.month << "/" << it->first.year << ", at ";
 		cout << it->second.first.hour << ":" << it->second.first.minutes << "-->" << it->second.second << endl;
