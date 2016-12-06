@@ -62,7 +62,7 @@ private:
 	multimap<Fecha, pair<Hora, string>> agendaMap;
 public:
 	void insertarEvento(const Fecha &fecha, const Hora &hora, const string &descripcion); //done
-	void eliminarEventos(const Fecha &desde_fecha, const Hora &desde_hora, const Fecha &hasta_fecha, const Hora &hasta_hora);//peta al erase
+	void eliminarEventos(const Fecha &desde_fecha, const Hora &desde_hora, const Fecha &hasta_fecha, const Hora &hasta_hora);//done
 	void mostrarAgenda();//done
 	list<pair<Hora, string>> eventosDia(const Fecha &fecha);//done
 	list<pair<Hora, string>> eventosDia(const Fecha &fecha, const Hora &desde, const Hora &hasta);//done
@@ -76,15 +76,17 @@ void Agenda::insertarEvento(const Fecha &fecha, const Hora &hora, const string &
 void Agenda::eliminarEventos(const Fecha &desde_fecha, const Hora &desde_hora, const Fecha &hasta_fecha, const Hora &hasta_hora) {
 	
 	auto it = agendaMap.begin();
-	auto temp = it;
 
 	while(it != agendaMap.end()) {
-		if (it->first >= desde_fecha && it->first <= hasta_fecha &&
-			it->second.first >= desde_hora && it->second.first <= hasta_hora) {
-			temp = it++;
-			agendaMap.erase(it);
-			it = temp;
+		if (it->first > desde_fecha && it->first < hasta_fecha ||
+			it->first == desde_fecha && it->second.first >= desde_hora ||
+			it->first == hasta_fecha && it->second.first <= hasta_hora) {
+			auto toErase = it;
+			++it;
+			agendaMap.erase(toErase);
 		}
+		else
+			++it;
 	}
 }
 
