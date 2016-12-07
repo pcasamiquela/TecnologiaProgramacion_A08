@@ -12,11 +12,11 @@ int main() {
 	agenda.mostrarAgenda();
 
 	cout << "\n..........ELIMINAR EVENTOS..........\n";
+	agenda.eventosDia(Fecha(5, 12, 2016), Hora(10, 00), Hora(23, 00));
 
 	agenda.eliminarEventos(Fecha(4, 12, 2016), Hora(15, 00), Fecha (5, 12, 2016), Hora (15, 0));
 	agenda.mostrarAgenda();
 
-	agenda.eventosDia(Fecha(5, 12, 2016), Hora(10,00), Hora(23,00));
 	system("PAUSE");
 	return 0;
 }

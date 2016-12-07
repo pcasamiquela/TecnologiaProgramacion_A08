@@ -99,16 +99,25 @@ void Agenda::mostrarAgenda() {
 
 list<pair<Hora, string>> Agenda::eventosDia(const Fecha &fecha) {
 	list<pair<Hora, string>> eventos;
+	map<Hora, string> eventosMap;
 	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
-		if (it->first == fecha) eventos.push_back(it->second);
+		if (it->first == fecha)eventosMap.insert(make_pair(it->second.first, it->second.second));
+	}
+	for (auto it = eventosMap.begin(); it != eventosMap.end(); ++it) {
+		eventos.push_back(make_pair(it->first, it->second));
 	}
 	return eventos;
 }
 
 list<pair<Hora, string>> Agenda::eventosDia(const Fecha &fecha, const Hora &desde, const Hora &hasta) {
 	list<pair<Hora, string>> eventos;
+	map<Hora, string> eventosMap;
+
 	for (auto it = agendaMap.begin(); it != agendaMap.end(); ++it) {
-		if (it->first == fecha && it->second.first >= desde && it->second.first <= hasta) eventos.push_back(it->second);
+		if (it->first == fecha && it->second.first >= desde && it->second.first <= hasta)eventosMap.insert(make_pair(it->second.first, it->second.second));
+	}
+	for (auto it = eventosMap.begin(); it != eventosMap.end(); ++it) {
+		eventos.push_back(make_pair(it->first, it->second));
 	}
 	return eventos;
 }
